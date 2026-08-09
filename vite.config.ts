@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-const GITHUB_PAGES_BASE = '/ecs-terraform-infra/'
+const GITHUB_PAGES_BASE = '/infra-simulator/'
 
 // https://vite.dev/config/
 export default defineConfig(({ command }) => ({
