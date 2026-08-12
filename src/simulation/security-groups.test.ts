@@ -19,8 +19,7 @@ import {
   albToTaskEdgeId,
   isEdgeUnderSecurityGroupRule,
   taskToJunctionEdgeId,
-  taskToRegistryEdgeId,
-  taskToSecretsEdgeId,
+  taskToInterfaceEdgeId,
   taskToStorageEdgeId,
 } from '../canvas/initial-graph'
 
@@ -135,11 +134,7 @@ describe('which edges a hovered rule lights up', () => {
   })
 
   it('lights the calls to the endpoints too, because the same egress rules allow them', () => {
-    for (const edgeId of [
-      taskToRegistryEdgeId('task-1'),
-      taskToStorageEdgeId('task-1'),
-      taskToSecretsEdgeId('task-1'),
-    ]) {
+    for (const edgeId of [taskToInterfaceEdgeId('task-1'), taskToStorageEdgeId('task-1')]) {
       expect(isEdgeUnderSecurityGroupRule(edgeId, TASK_EGRESS)).toBe(true)
     }
   })
@@ -149,7 +144,7 @@ describe('which edges a hovered rule lights up', () => {
 
     expect(isEdgeUnderSecurityGroupRule(SERVICE_TO_ENDPOINT_EDGE_ID, SERVICE_EGRESS)).toBe(true)
     expect(isEdgeUnderSecurityGroupRule(SERVICE_TO_ENDPOINT_EDGE_ID, TASK_EGRESS)).toBe(false)
-    expect(isEdgeUnderSecurityGroupRule(taskToRegistryEdgeId('task-1'), SERVICE_EGRESS)).toBe(false)
+    expect(isEdgeUnderSecurityGroupRule(taskToInterfaceEdgeId('task-1'), SERVICE_EGRESS)).toBe(false)
   })
 
   it('declares that line under the same security group the tasks egress by', () => {

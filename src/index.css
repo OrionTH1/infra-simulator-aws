@@ -410,59 +410,31 @@
   border-radius: 3px;
 }
 
-.door-jamb {
-  background-color: var(--color-border);
-  transition: background-color var(--motion-state) var(--ease-converge);
-}
-
+/* Both doors carry the same mark. An interface endpoint and a gateway endpoint differ in what is behind
+   them, not in what they are on the wall: a break in the perimeter with a port sitting in it. */
 .door-mark {
-  position: relative;
-  overflow: hidden;
   border: 1px solid var(--color-border);
-  background-color: transparent;
+  background-color: var(--color-canvas);
   transition:
     border-color var(--motion-settle) var(--ease-state),
-    background-color var(--motion-settle) var(--ease-state);
-}
-
-.door-mark.carrying {
-  border-color: color-mix(in srgb, var(--color-border-interaction) 70%, transparent);
-  background-color: color-mix(in srgb, var(--color-border-interaction) 58%, transparent);
+    background-color var(--motion-settle) var(--ease-state),
+    box-shadow var(--motion-settle) var(--ease-state);
 }
 
 @keyframes door-carrying {
-  from {
-    background-position: -40% 0;
+  0%,
+  100% {
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-border-interaction) 10%, transparent);
   }
-  to {
-    background-position: 140% 0;
-  }
-}
-
-@keyframes door-carrying-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
+  50% {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-border-interaction) 20%, transparent);
   }
 }
 
-.door-mark.carrying::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background-image: linear-gradient(
-    90deg,
-    transparent 0%,
-    color-mix(in srgb, white 26%, var(--color-border-interaction)) 50%,
-    transparent 100%
-  );
-  background-repeat: no-repeat;
-  background-size: 55% 100%;
-  animation:
-    door-carrying 2600ms var(--ease-state) infinite,
-    door-carrying-in var(--motion-settle) var(--ease-state) both;
+.door-mark.carrying {
+  border-color: var(--color-border-interaction);
+  background-color: color-mix(in srgb, var(--color-border-interaction) 32%, var(--color-canvas));
+  animation: door-carrying 2200ms var(--ease-state) infinite;
 }
 
 .door-label {
@@ -470,13 +442,9 @@
   transition: color var(--motion-state) var(--ease-converge);
 }
 
-.door:hover .door-jamb,
-.door:focus-visible .door-jamb {
-  background-color: var(--color-border-interaction);
-}
-
 .door:hover .door-mark,
 .door:focus-visible .door-mark {
+  animation: none;
   border-color: var(--color-fg-muted);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-fg-muted) 16%, transparent);
 }

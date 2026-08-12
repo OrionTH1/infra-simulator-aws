@@ -3,9 +3,11 @@ import { DOOR_HEIGHT, DOOR_WIDTH } from '../../canvas/initial-graph'
 import { useSecurityGroupStore, type BoundaryAnchor } from '../../store/useSecurityGroupStore'
 import type { VpcDoorFlowNode } from '../../types/node-data'
 
-const WALL_MASK_HEIGHT = 3
-const MARK_WIDTH = 24
-const MARK_HEIGHT = 8
+// Every measurement here is even, and DOOR_HEIGHT is too: the mark is centred by half of each of them,
+// and a half pixel anywhere in that chain lands the port off the wall it is supposed to sit on.
+const WALL_MASK_HEIGHT = 4
+const WALL_MASK_WIDTH = 20
+const MARK_SIZE = 12
 
 function anchorOf(element: HTMLElement): BoundaryAnchor {
   const rect = element.getBoundingClientRect()
@@ -53,16 +55,14 @@ export function VpcDoorNode({ id, data }: NodeProps<VpcDoorFlowNode>) {
 
       <div className="door-opening relative w-full" style={{ height: DOOR_HEIGHT }}>
         <span
-          className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-canvas"
-          style={{ height: WALL_MASK_HEIGHT }}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-canvas"
+          style={{ width: WALL_MASK_WIDTH, height: WALL_MASK_HEIGHT }}
         />
-        <span className="door-jamb absolute left-0 top-0 h-full w-px" />
-        <span className="door-jamb absolute right-0 top-0 h-full w-px" />
         <span
           className={`door-mark absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full ${
             data.isCarrying ? 'carrying' : ''
           }`}
-          style={{ width: MARK_WIDTH, height: MARK_HEIGHT }}
+          style={{ width: MARK_SIZE, height: MARK_SIZE }}
         />
       </div>
 

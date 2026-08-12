@@ -13,11 +13,9 @@ import {
   ENDPOINT_TO_SECRETS_EDGE_ID,
   ENDPOINT_TO_STORAGE_EDGE_ID,
   SERVICE_TO_ENDPOINT_EDGE_ID,
-  SECRETS_MANAGER_NODE_ID,
-  taskToSecretsEdgeId,
   albToTaskEdgeId,
   taskToJunctionEdgeId,
-  taskToRegistryEdgeId,
+  taskToInterfaceEdgeId,
   taskToStorageEdgeId,
 } from '../canvas/initial-graph'
 import { isPullingImageStatus, pullSecondsRemaining, type ImagePullLegs } from '../simulation/image-pull'
@@ -159,7 +157,7 @@ export function useTaskGraph({
 
       if (isPullingImageStatus(task.status)) {
         edges.push({
-          id: taskToRegistryEdgeId(task.id),
+          id: taskToInterfaceEdgeId(task.id),
           type: 'requestFlow',
           source: task.id,
           sourceHandle: 'out',
@@ -185,11 +183,11 @@ export function useTaskGraph({
 
       if (isFetchingSecret(task.status)) {
         edges.push({
-          id: taskToSecretsEdgeId(task.id),
+          id: taskToInterfaceEdgeId(task.id),
           type: 'requestFlow',
           source: task.id,
           sourceHandle: 'out',
-          target: SECRETS_MANAGER_NODE_ID,
+          target: INTERFACE_ENDPOINTS_NODE_ID,
           targetHandle: 'in',
           data: { requestsPerMinute: 0 },
           deletable: false,
@@ -234,7 +232,7 @@ export function useTaskGraph({
         .filter((task) => isPullingImageStatus(task.status))
         .map((task) => ({
           taskId: task.id,
-          registryEgressEdgeId: taskToRegistryEdgeId(task.id),
+          registryEgressEdgeId: taskToInterfaceEdgeId(task.id),
           registryEdgeId: ENDPOINT_TO_ECR_EDGE_ID,
           storageEgressEdgeId: taskToStorageEdgeId(task.id),
           storageEdgeId: ENDPOINT_TO_STORAGE_EDGE_ID,
@@ -262,7 +260,7 @@ export function useTaskGraph({
         .filter((task) => isFetchingSecret(task.status))
         .map((task) => ({
           taskId: task.id,
-          endpointEdgeId: taskToSecretsEdgeId(task.id),
+          endpointEdgeId: taskToInterfaceEdgeId(task.id),
           serviceEdgeId: ENDPOINT_TO_SECRETS_EDGE_ID,
         })),
     [orderedTasks],

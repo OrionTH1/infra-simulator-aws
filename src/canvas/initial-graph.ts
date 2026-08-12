@@ -53,14 +53,12 @@ export const ALARMS_TO_SNS_EDGE_ID = 'cloudwatch-alarms-sns-topic'
 export const ENDPOINT_TO_LOGS_EDGE_ID = 'interface-endpoints-cloudwatch-logs'
 export const ENDPOINT_TO_SECRETS_EDGE_ID = 'interface-endpoints-secrets-manager'
 export const SERVICE_TO_ENDPOINT_EDGE_ID = 'ecs-service-interface-endpoints'
-
-export function taskToSecretsEdgeId(taskId: string): string {
-  return `${taskId}-${SECRETS_MANAGER_NODE_ID}`
-}
 export const ENDPOINT_TO_ECR_EDGE_ID = 'interface-endpoints-ecr'
 export const ENDPOINT_TO_STORAGE_EDGE_ID = 'gateway-endpoint-layer-storage'
 
-export function taskToRegistryEdgeId(taskId: string): string {
+// The image pull and the secret fetch both leave the task by the same door, and they never overlap:
+// the pull belongs to provisioning, the secret to starting. One egress edge serves both.
+export function taskToInterfaceEdgeId(taskId: string): string {
   return `${taskId}-${INTERFACE_ENDPOINTS_NODE_ID}`
 }
 
@@ -117,7 +115,7 @@ export const REGIONAL_SERVICE_GAP = 96
 export const LOGS_EGRESS_LANE = 64
 export const ENDPOINT_COLUMN_GAP = 24
 export const DOOR_WIDTH = 48
-export const DOOR_HEIGHT = 9
+export const DOOR_HEIGHT = 10
 export const DOOR_PAIR_GAP = 180
 
 const VPC_BORDER_BEYOND_AURORA_FRAME = FRAME_PADDING * 2
@@ -150,12 +148,7 @@ export function albToTaskEdgeId(taskId: string): string {
   return `${ALB_NODE_ID}-${taskId}`
 }
 
-const TASK_EGRESS_DESTINATIONS = [
-  DB_JUNCTION_NODE_ID,
-  INTERFACE_ENDPOINTS_NODE_ID,
-  GATEWAY_ENDPOINT_NODE_ID,
-  SECRETS_MANAGER_NODE_ID,
-]
+const TASK_EGRESS_DESTINATIONS = [DB_JUNCTION_NODE_ID, INTERFACE_ENDPOINTS_NODE_ID, GATEWAY_ENDPOINT_NODE_ID]
 
 function isDatabaseEdge(edgeId: string): boolean {
   return (

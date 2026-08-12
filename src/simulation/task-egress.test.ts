@@ -1,12 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import { buildLogShipment, buildSecretFetch, isFetchingSecret } from './task-egress'
 import { securityGroupBoundary } from './security-groups'
+import { INTERFACE_ENDPOINTS_NODE_ID, SECRETS_MANAGER_NODE_ID, taskToInterfaceEdgeId } from '../canvas/initial-graph'
 import { TASK_STATUS_MESSAGE } from '../types/task-data'
 
 const SERVICE_TO_ENDPOINT = 'ecs-service-interface-endpoints'
 const ENDPOINT_TO_LOGS = 'interface-endpoints-cloudwatch-logs'
 
-const TASK_TO_ENDPOINT = 'task-1-secrets-manager'
+const TASK_TO_ENDPOINT = taskToInterfaceEdgeId('task-1')
 const ENDPOINT_TO_SECRETS = 'interface-endpoints-secrets-manager'
 
 const LOG_LEGS = {
@@ -55,6 +56,12 @@ describe('fetching the database password', () => {
 
   it('gives back nothing when the endpoint is unreachable', () => {
     expect(buildSecretFetch(SECRET_LEGS, new Set())).toEqual([])
+  })
+
+  it('leaves by the interface endpoint, because no task in a private subnet reaches the service directly', () => {
+    expect(TASK_TO_ENDPOINT.endsWith(`-${INTERFACE_ENDPOINTS_NODE_ID}`)).toBe(true)
+    expect(TASK_TO_ENDPOINT.endsWith(`-${SECRETS_MANAGER_NODE_ID}`)).toBe(false)
+    expect(buildSecretFetch(SECRET_LEGS, SECRETS_UP)[0]?.edgeId).toBe(TASK_TO_ENDPOINT)
   })
 })
 
