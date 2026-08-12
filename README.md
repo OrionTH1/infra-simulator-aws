@@ -32,8 +32,6 @@ Este é o ponto que separa o simulador de uma animação bonita: **todo número 
 2. Documentação ou benchmark publicado da AWS, com a aritmética da derivação explícita
 3. Premissa declarada sobre o workload, quando não existe fonte
 
-O [`CALIBRATION.md`](CALIBRATION.md) lista item por item, e tem uma seção chamada "Números que ainda não têm fonte" onde ficam registrados os que foram escolhidos por ritmo de demonstração em vez de medição. Preferi assumir isso a apresentar tudo como se fosse medido.
-
 ## Rodar local
 
 ```bash
@@ -52,9 +50,3 @@ Os testes cobrem a simulação, não a interface: distribuição de tráfego, ja
 ## Stack
 
 React com TypeScript e Vite, [React Flow](https://reactflow.dev) para o canvas, Zustand para o estado da simulação e Tailwind. O deploy sai pelo GitHub Pages a cada push na branch principal.
-
-## O que ele não faz
-
-Não aplica nada, não lê nada da AWS e não conhece nenhuma conta. Também não simula o que a infraestrutura do outro repositório não tem: não existe bucket da aplicação, o S3 que aparece no desenho é onde o ECR guarda as camadas da imagem.
-
-O [`SIMULATOR_PLAN.md`](SIMULATOR_PLAN.md) guarda o backlog, o que já foi feito, e a lista do que foi recusado com o motivo.
